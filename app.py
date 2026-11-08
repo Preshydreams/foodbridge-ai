@@ -228,7 +228,75 @@ if st.button("⚡ Generate optimal allocation", type="primary", use_container_wi
     total_transport = float((result["Allocated (kg)"] * result["Distance (km)"]).sum())
     fulfilment = min(100.0, total_allocated / total_demand * 100) if total_demand else 0
     remaining = max(0.0, total_supply - total_allocated)
+    # Traditional first-come-first-served allocation benchmark
+    baseline_supply = eligible.set_index("food")["available_kg"].to_dict()
+    baseline_capacity = centres.set_index("centre")["capacity_kg"].to_dict()
 
+    baseline_rows = []
+
+    for _, row in demand.iterrows():
+        food = row["food"]
+        centre = row["centre"]
+
+        if food not in baseline_supply:
+            continue
+
+        quantity = min(
+            float(row["demand_kg"]),
+            baseline_supply[food],
+            baseline_capacity[centre]
+        )
+
+        if quantity > 0:
+            baseline_rows.append({
+                "Food": food,
+                "Distribution centre": centre,
+                "Allocated (kg)": quantity,
+                "Distance (km)": float(row["distance_km"])
+            })
+
+            baseline_supply[food] -= quantity
+            baseline_capacity[centre] -= quantity
+
+    baseline = pd.DataFrame(baseline_rows)
+
+    baseline_total = baseline["Allocated (kg)"].sum() if not baseline.empty else 0
+    baseline_transport = (
+        (baseline["Allocated (kg)"] * baseline["Distance (km)"]).sum()
+        if not baseline.empty else 0
+    )
+
+    baseline_fulfilment = (
+        baseline_total / total_demand * 100 if total_demand else 0
+    )
+
+    st.subheader("3. Traditional vs FOODBRIDGE AI")
+
+    comparison = pd.DataFrame({
+        "Performance metric": [
+            "Food allocated (kg)",
+            "Demand fulfilled (%)",
+            "Transport load (kg·km)"
+        ],
+        "Traditional method": [
+            round(baseline_total, 1),
+            round(baseline_fulfilment, 1),
+            round(baseline_transport, 1)
+        ],
+        "FOODBRIDGE AI": [
+            round(total_allocated, 1),
+            round(fulfilment, 1),
+            round(total_transport, 1)
+        ]
+    })
+
+    st.dataframe(comparison, use_container_width=True, hide_index=True)
+
+    st.caption(
+        "Traditional benchmark uses first-come-first-served allocation "
+        "in the supplied demand order. Both methods use the same supply, "
+        "demand and centre-capacity constraints."
+    )
     a, b, c, d = st.columns(4)
     a.metric("Food allocated", f"{total_allocated:,.1f} kg")
     b.metric("Demand fulfilled", f"{fulfilment:.1f}%")
