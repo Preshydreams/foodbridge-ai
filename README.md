@@ -1,54 +1,116 @@
-# FoodBridge AI
+FOODBRIDGE AI
 
-A prototype for the DataNova 2026 Food Bank Resource Allocation Optimization problem.
+Intelligent Food Rescue, Fair Allocation and Waste Reduction
 
-## What it does
-- Allocates donated food across distribution centres.
-- Respects available supply, centre capacity and food-specific demand.
-- Gives extra weight to food nearing its expiry date (but excludes already-expired food).
-- Uses a max-min fairness constraint to improve the minimum demand-fulfilment ratio across centres.
-- Penalises longer transport distances.
-- Shows a recommended allocation table and charts.
-- Supports CSV uploads and downloadable allocation plans.
+FOODBRIDGE AI is a data-driven decision-support prototype designed to help food banks and community distribution centres allocate donated food more effectively.
 
-## Run locally
-```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-streamlit run app.py
-```
+It uses optimisation techniques to recommend food distribution based on available supply, centre demand, storage capacity, expiry urgency, transport distance and allocation priorities.
 
-## Deploy free with Streamlit Community Cloud
-1. Create a public GitHub repository.
-2. Upload `app.py` and `requirements.txt`.
-3. Go to https://share.streamlit.io/ and connect GitHub.
-4. Choose the repository and `app.py` as the main file.
-5. Deploy and test the public link in a private/incognito browser.
+Problem Statement
 
-## CSV formats
+Food banks often face challenges distributing limited donated food across multiple communities. Poor allocation decisions can lead to:
 
-### donations.csv
-Required columns: `food, available_kg, days_to_expiry`
+- Food waste due to approaching expiry dates.
+- Uneven distribution between community centres.
+- Unmet food demand.
+- Unnecessary transportation burdens.
+- Difficulty making transparent allocation decisions.
 
-### centres.csv
-Required columns: `centre, capacity_kg, priority`
+FOODBRIDGE AI addresses these challenges through mathematical optimisation and interactive data analytics.
 
-### demand.csv
-Required columns: `centre, food, demand_kg, distance_km`
+Proposed Solution
 
-Names in the `food` and `centre` columns must match across files.
+The platform analyses food donations, distribution-centre requirements and available operational information to generate recommended allocation plans.
 
-## Important limitations
-- Sample data is synthetic and illustrative.
-- Distance is currently a supplied road-distance estimate, not live routing.
-- The prototype uses a linear-programming objective; weights are tunable and should be calibrated with food-bank operators.
-- The model does not determine whether food is safe to distribute. Expired food is excluded; food-safety decisions remain with qualified staff.
-- This tool supports human decision-making and does not autonomously dispatch food.
+Its optimisation engine uses linear programming through PuLP to identify allocations that respect supply, demand and storage constraints while considering fairness, urgency and distance.
 
-## Validation plan for the competition
-1. Run a baseline allocation (e.g. allocate in input order) on the same test scenarios.
-2. Compare total demand fulfilled, minimum centre fulfilment ratio, transport load (kg·km), and unallocated unexpired supply.
-3. Test scarcity, surplus, capacity bottlenecks, and near-expiry scenarios.
-4. Report only measured results from reproducible runs.
+Key Features
+
+- Interactive dashboard: Overview of allocation performance and key indicators.
+- Data management: Review and edit donation, centre and demand datasets.
+- AI allocation engine: Generate optimised food distribution recommendations.
+- Benchmark comparison: Compare recommendations against a deterministic first-come-first-served baseline.
+- Expiry and waste monitoring: Identify food items approaching expiry.
+- Transport analytics: Examine allocation-related transport loads and distances.
+- What-if simulator: Explore how changes in operational inputs affect recommendations.
+- Methodology and transparency: Explain assumptions, constraints and limitations.
+
+Technology Stack
+
+- Python
+- Streamlit
+- Pandas
+- Plotly
+- PuLP
+- GitHub
+- Streamlit Community Cloud
+
+Optimisation Approach
+
+FOODBRIDGE AI formulates food allocation as a linear programming problem.
+
+The model considers:
+
+1. Available food quantities.
+2. Distribution-centre demand.
+3. Centre storage capacity.
+4. Transport distances.
+5. Food expiry urgency.
+6. Centre allocation priorities.
+7. Minimum centre-level demand fulfilment.
+
+The solver identifies an optimal solution for the mathematical formulation and supplied input data.
+
+Benchmarking
+
+The prototype compares its recommended allocation against a deterministic first-come-first-served benchmark.
+
+Both approaches use the same supplied food availability, demand and centre-capacity limits.
+
+The benchmark is illustrative. It is not a measured real-world control group.
+
+Prototype Results
+
+In the current sample scenario, the dashboard reports:
+
+- Additional food allocated: 75.0 kg
+- Fulfilment change: +6.0 percentage points
+
+The recommended allocation also increases transport load relative to the benchmark. This trade-off is disclosed rather than presented as a transport efficiency improvement.
+
+These figures are based on the prototype's sample scenario and must not be interpreted as verified real-world impact.
+
+Live Demonstration
+
+FOODBRIDGE AI:
+https://foodbridge-ai-hesrm54jbeqnvzykjzvhze.streamlit.app/
+
+Repository
+
+https://github.com/preshydreams/foodbridge-ai
+
+Limitations and Future Development
+
+The current prototype has several limitations:
+
+- It uses supplied distances rather than live road-route calculations.
+- It does not currently model vehicle capacity, traffic or actual transport costs.
+- Expiry information does not replace food-safety inspection.
+- Fairness is measured at distribution-centre level.
+- Sample data is illustrative and requires field validation.
+
+Future development could include live route optimisation, vehicle scheduling, food-safety rules, population-based vulnerability measures, real food-bank datasets and integration with food donation networks.
+
+Social Impact
+
+FOODBRIDGE AI aims to support more transparent, responsible and data-informed food distribution decisions.
+
+By helping food banks understand supply, demand, urgency and allocation trade-offs, the project seeks to contribute to reducing avoidable food waste and improving food access.
+
+Author
+
+Chukwunalu Ekule
+
+Project: FOODBRIDGE AI
+Competition: DataNova 2026 Global Data-thon
+Problem: DN-SI-01 — Food Bank Resource Allocation Optimization
