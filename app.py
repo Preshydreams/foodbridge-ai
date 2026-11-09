@@ -4,14 +4,38 @@ import plotly.express as px
 import pulp
 from io import BytesIO
 
-st.set_page_config(page_title="FOODBRIDGE AI", page_icon="ðŸ¥«", layout="wide")
+st.set_page_config(page_title="FOODBRIDGE AI", layout="wide")
 
 # ---------- Styling ----------
-st.markdown(""" <style> .block-container {padding-top: 1.4rem; padding-bottom: 2rem;} [data-testid="stMetric"] {background: #f5f8f6; border: 1px solid #e2ebe5; padding: 14px; border-radius: 12px;} section[data-testid="stSidebar"] {background: #f4f7f5;} </style> """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+.block-container {
+    padding-top: 1.4rem;
+    padding-bottom: 2rem;
+}
+[data-testid="stMetric"] {
+    background: #f5f8f6;
+    border: 1px solid #d5e2da;
+    padding: 16px;
+    border-radius: 12px;
+}
+[data-testid="stMetric"] label,
+[data-testid="stMetric"] [data-testid="stMetricValue"],
+[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+    color: #14211b !important;
+}
+[data-testid="stMetric"] svg {
+    color: #14211b !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
-st.title("ðŸ¥« FOODBRIDGE AI")
-st.caption("Intelligent food rescue â€¢ Fair allocation â€¢ Transparent decisions")
-st.info("A human-supervised decision-support prototype for allocating donated food. Always verify food safety and operational feasibility before dispatch.")
+st.title("FOODBRIDGE AI")
+st.caption("Intelligent food rescue | Fair allocation | Transparent decisions")
+st.info(
+    "A human-supervised decision-support prototype for allocating donated food. "
+    "Always verify food safety and operational feasibility before dispatch."
+)
 
 # ---------- Sample scenario ----------
 def sample_data():
